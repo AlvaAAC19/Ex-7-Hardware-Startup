@@ -89,7 +89,7 @@ s0.goTo(6400)
 # One thing you may have noticed is that some commands such as
 # s0.relative_move()
 # s0.go_to_position()
-# does not complete until the command is finished - so you cant run commands such as:
+# does not complete until the command is finished - so you can't run commands such as:
 # s0.stop()
 # s0.get_position_in_units()
 # on the stepper until the command completes. These are often called blocking commands.
@@ -145,7 +145,7 @@ s1.setSlope(0x562, 0x010, 0x01F, 0x01F)
 s1.setParam(L6470Registers.CONFIG, 0x3688)
 s1.free()
 
-# Now try using the s1 instance to move it back and forth, and back to hose as you did with the s0 instance.
+# Now try using the s1 instance to move it back and forth, and back to home as you did with the s0 instance.
 
 # Now it is time to try initializing additional instances of the stepper.
 # For example try creating stepper instance s2
