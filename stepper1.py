@@ -29,7 +29,7 @@ MAIN_SCREEN_NAME = 'stepper1'
 
 # Init a 200 steps per revolution stepper on Port 0
 s0 = stepper(port=0, micro_steps=32, hold_current=20, run_current=20, accel_current=20, deaccel_current=20,
-             steps_per_unit=200, speed=3)
+             steps_per_unit=200, speed=2)
 
 class ProjectNameGUI(App):
     """
@@ -50,17 +50,74 @@ class MainScreen(Screen):
     Class to handle the main screen and its associated touch events
     """
 
+    my_slider = ObjectProperty(None)
+    slider_label = ObjectProperty(None)
+    position_label = ObjectProperty(None)
+
     def start_stepper(self):
         """
         Function that turns on the stepper
         """
-        s0.go_until_press(0, 6400)
+        s0.go_until_press(0, self.my_slider.value*6400)
 
     def stop_stepper(self):
         """
         Function that turns off stepper
         """
         s0.softStop()
+
+    def change_direction(self):
+        """
+        Function that runs stepper counter-clockwise
+        """
+        s0.go_until_press(1, self.my_slider.value*6400)
+
+    def speed_slider(self):
+        """
+        create slider to control the speed of the motor (range 1 to 5)
+        """
+        self.my_slider
+        self.slider_label
+        s0.set_speed(self.my_slider.value)
+
+    def get_position(self):
+        """
+        function that prints position of stepper to label on screen
+        """
+        self.position_label.text = str(s0.get_position_in_units())
+
+    def thread_spin(self):
+        Thread(target=self.spin).start()
+
+    def spin(self):
+        self.get_position()
+        s0.set_speed(1)
+        s0.start_relative_move(15)
+        self.get_position()
+        sleep(15)
+        self.get_position()
+
+        sleep(11)
+        s0.set_speed(5)
+        s0.start_relative_move(10)
+        sleep(2)
+        self.get_position()
+
+        sleep(8)
+        s0.goHome()
+        sleep(10)
+        self.get_position()
+
+        s0.set_speed(8)
+        s0.start_relative_move(32)
+        sleep(6)
+        self.get_position()
+
+        sleep(10)
+        s0.goHome()
+        sleep(5)
+        self.get_position()
+
 
 Builder.load_file('stepper1.kv')
 SCREEN_MANAGER.add_widget(MainScreen(name=MAIN_SCREEN_NAME))

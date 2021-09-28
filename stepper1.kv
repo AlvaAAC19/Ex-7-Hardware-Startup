@@ -1,18 +1,69 @@
 <MainScreen>
 
+    my_slider: my_slider
+    slider_label: slider_label
+    position_label: position_label
+
     name: 'main'
     FloatLayout:
         size_hint: None, None
 
     DPEAButton:
         id: start_stepper_button
-        text: 'motor'
+        text: 'Turn on motor'
         size: 100, 100
         x: root.width * 0.75
         y: root.height * 0.5
         color: 0, 1, 0, 1
         on_press: root.start_stepper()
         on_release: root.stop_stepper()
+
+    DPEAButton:
+        id: change_direction_button
+        text: 'Change direction'
+        size: 100, 100
+        x: root.width * 0.25
+        y: root.height * 0.5
+        color: 0, 1, 0, 1
+        on_press: root.change_direction()
+        on_release: root.stop_stepper()
+
+    Slider:
+        id: my_slider
+        y: root.height * 0.2
+        x: root.width * 0.1
+        size_hint: 0.9, 0.1
+        min: 1
+        max: 10
+        value: 2
+        step: 1
+        on_value: root.speed_slider()
+
+    Label:
+        id: slider_label
+        size_hint: 0.15, 0.4
+        x: 0.5
+        y: 0.1
+        color: 0, 0, 0, 1
+        text: str(my_slider.value)
+
+    DPEAButton:
+        id: get_position_button
+        text: 'Do things'
+        size: 100, 100
+        x: root.width * 0.5
+        y: root.height * 0.5
+        color: 0, 1, 0, 1
+        on_press: root.thread_spin()
+
+    Label:
+        id: position_label
+        size_hint: None, None
+        font_size: 40
+        center_x: root.width * 0.4
+        center_y: root.height * 0.9
+        color: 0, 0, 0, 1
+        text: "position"
 
 
 
