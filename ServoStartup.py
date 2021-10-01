@@ -16,7 +16,7 @@ spi = spidev.SpiDev()
 # For this example we will use the RPiMIB to create the PWM signals to talk to Servo motors and motor controllers.
 #
 # The RPiMIB (Raspberry Pi Multi Interface Board) has two PWM outputs, which will be sufficient for this example. If
-# need more thanimport spidev
+# need more than import spidev
 import os
 from time import sleep
 import RPi.GPIO as GPIO
@@ -128,3 +128,88 @@ cyprus.close()
 # 2b. Connect a limit switch to P6 and make DC motor connected to talon on P4 be at full speed clockwise when limit switch is pressed (closed) and stopped when open
 # 3. Connect a Cytron motor controller and a dc motor to P5. Turn on a DC motor at full speed clockwise. Stop 5 seconds then Full speed counterclockwise
 # 3a. Connect a proximity sensor to P7 and make the cytron motor controller on P5 be at full speed clockwise when the proximity sensor is detecting metal and stopped when it is not detecting metal
+
+
+cyprus.initialize()
+cyprus.setup_servo(1)
+cyprus.set_servo_position(1, 0.5)
+
+
+while True:
+    if (cyprus.read_gpio() & 0b0001):    # binary bitwise AND of the value returned from read.gpio()
+        sleep(1)
+        if (cyprus.read_gpio() & 0b0001): #  a little debounce logic
+            print("GPIO on port P6 is HIGH")
+    else:
+        print("GPIO on port P6 is LOW")
+        sleep(1)
+
+while True:
+    if (cyprus.read_gpio() & 0b0001):    # binary bitwise AND of the value returned from read.gpio()
+        sleep(1)
+        if (cyprus.read_gpio() & 0b0001): #  a little debounce logic
+            print("GPIO on port P6 is HIGH")
+            cyprus.set_servo_position(1, 1)
+    else:
+        print("GPIO on port P6 is LOW")
+        cyprus.set_servo_position(1,0)
+        sleep(1)
+
+
+cyprus.set_pwm_values(2, period_value=100000, compare_value=100000, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+sleep(5)
+cyprus.set_pwm_values(2, period_value=10000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+sleep(5)
+cyprus.set_pwm_values(2, period_value=100000, compare_value=100000, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+sleeps(5)
+cyprus.set_pwm_values(2, period_value=10000, compare_value=0, compare_mode=cyprus.LESS_THAN_OR_EQUAL)
+
+cyprus.initialize()
+cyprus.setup_servo(2)
+cyprus.set_servo_position(2, 1)
+sleep(5)
+cyrpus.set_servo_position(2, 0.5)
+sleep(5)
+cyprus.set_servo_position(2, 0)
+sleep(5)
+cyrpus.set_servo_position(2, 0.5)
+
+cyprus.initialize()
+cyprus.setup_servo(2)
+speed = 0.5
+while speed <1:
+    cyprus.set_servo_position(2, speed)
+    speed += 0.025
+    sleep(1)
+cyprus.set_servo_position(2, 0.5)
+
+while True:
+    if (cyprus.read_gpio() & 0b0001):    # binary bitwise AND of the value returned from read.gpio()
+        cyprus.set_servo_position(2, 0.5)
+    else:
+        cyprus.set_servo_position(2,1)
+
+
+while True:
+    if (cyprus.read_gpio() & 0b0001):    # binary bitwise AND of the value returned from read.gpio()
+        sleep(0.5)
+        if (cyprus.read_gpio() & 0b0001):
+            print("HIGH")
+            cyprus.set_servo_position(2, 0.5)
+            sleep(0.5)
+    else:
+        print("LOW")
+        cyprus.set_servo_position(2, 1)
+        sleep(0.5)
+
+while True:
+    if (cyprus.read_gpio() & 0b0010):    # binary bitwise AND of the value returned from read.gpio()
+        sleep(0.1)
+        if (cyprus.read_gpio() & 0b0010):
+            print("GPIO on port P7 is HIGH")
+            cyprus.set_servo_position(2, 0.5)
+            sleep(0.1)
+    else:
+        print("GPIO on port P7 is LOW")
+        cyprus.set_servo_position(2, 1)
+        sleep(0.1)
